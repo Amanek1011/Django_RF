@@ -29,7 +29,12 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
 
 
 # Application definition
+MY_APPS = [
 
+]
+THIRD_PARTY_APPS =[
+    'rest_framework',
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+] + THIRD_PARTY_APPS + MY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
