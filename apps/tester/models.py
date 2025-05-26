@@ -4,7 +4,7 @@ class Test(models.Model):
     test_name = models.CharField(max_length=200)
     WorkTime = models.IntegerField(verbose_name='Время выполнения (мин)')
     QuestionsCount = models.IntegerField()
-    test_result = models.TextField(max_length=20)
+    test_result = models.TextField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.test_name
