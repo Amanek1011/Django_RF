@@ -43,4 +43,5 @@ urlpatterns = [
     path('', include('apps.tester.urls')),
     path('schema/', include(swagger_patterns)),
     path('jwt/', include(jwt_patterns)),
+    path('users', include('apps.users.urls')),
 ]

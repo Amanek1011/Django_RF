@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from rest_framework import status, generics, viewsets
+from rest_framework import status, generics, viewsets, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -34,6 +34,7 @@ class TestListAPIView(generics.ListAPIView):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # model Question
