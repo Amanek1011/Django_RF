@@ -40,7 +40,7 @@ class Answer(models.Model):
 
 class UserTest(models.Model):
     ProfileId = models.ForeignKey(Test, on_delete=models.CASCADE)
-    UserName = models.CharField(max_length=300, verbose_name="ФИО")
+    UserName = models.CharField(max_length=300, verbose_name="Имя пользователя")
     DateTime = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Время завершения")
     Rating =models.FloatField(verbose_name="Проценты")
 

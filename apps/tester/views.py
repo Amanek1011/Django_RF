@@ -1,10 +1,12 @@
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, generics, viewsets, permissions
 from rest_framework.decorators import api_view
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
+from apps.tester.filters import TestFilter, UserTestSearch
 from apps.tester.models import Test, Question, Answer, UserTest
 from apps.tester.serializers import TestSerializer, QuestionSerializer, AnswerSerializer, UserTestSerializer
 
@@ -29,12 +31,15 @@ class TestDetailApiView(generics.RetrieveAPIView):
 class TestListAPIView(generics.ListAPIView):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['test_name']
 
 
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
+    filterset_class = TestFilter
 
 
 # model Question
@@ -64,6 +69,8 @@ class QuestionListApiView(generics.ListAPIView):
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['test']
 
 
 # model Answer
@@ -92,6 +99,8 @@ class AnswerListApiView(generics.ListAPIView):
 class AnswerViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['QuestionId']
 
 
 # model UserTest
@@ -121,3 +130,4 @@ class UserTestListApiView(generics.ListAPIView):
 class UserTestViewSet(viewsets.ModelViewSet):
     queryset = UserTest.objects.all()
     serializer_class = UserTestSerializer
+    filterset_class = UserTestSearch
