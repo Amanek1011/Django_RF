@@ -2,7 +2,6 @@ from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, generics, viewsets, permissions
 from rest_framework.decorators import api_view
-from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -38,7 +37,7 @@ class TestListAPIView(generics.ListAPIView):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     filterset_class = TestFilter
 
 
@@ -69,6 +68,7 @@ class QuestionListApiView(generics.ListAPIView):
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['test']
 
@@ -99,6 +99,7 @@ class AnswerListApiView(generics.ListAPIView):
 class AnswerViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['QuestionId']
 
@@ -130,4 +131,5 @@ class UserTestListApiView(generics.ListAPIView):
 class UserTestViewSet(viewsets.ModelViewSet):
     queryset = UserTest.objects.all()
     serializer_class = UserTestSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filterset_class = UserTestSearch
