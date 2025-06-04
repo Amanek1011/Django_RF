@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from apps.tester.views import hello, TestListApiView, QuestionDetailApiView, TestDetailApiView, TestListAPIView, \
     TestViewSet, QuestionDetailAPIView, QuestionListApiView, QuestionViewSet, AnswerDetailAPIView, AnswerListApiView, \
-    AnswerViewSet, UserTestDetailApiView, UserTestDetailAPIView, UserTestListApiView, UserTestViewSet
+    AnswerViewSet, UserTestDetailApiView, UserTestDetailAPIView, UserTestListApiView, UserTestViewSet, SubmitTestView
 
 router = routers.DefaultRouter()
 router.register('tests-viewset',TestViewSet)
@@ -29,5 +29,6 @@ urlpatterns = [
     #UserTest
     path('user_test/<int:pk>', UserTestDetailApiView.as_view(), name = 'user_test-detail'),
     path('generics/user_test/<int:pk>', UserTestDetailAPIView.as_view(), name = 'user_test-detail'),
-    path('generics/users_tests-list', UserTestListApiView.as_view(), name = 'user_test-list')
+    path('generics/users_tests-list', UserTestListApiView.as_view(), name = 'user_test-list'),
+    path('api/tests/<int:test_id>/submit/', SubmitTestView.as_view(), name='submit-test'),
 ]

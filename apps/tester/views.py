@@ -1,13 +1,17 @@
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import status, generics, viewsets, permissions
 from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from apps.tester.filters import TestFilter, UserTestSearch
 from apps.tester.models import Test, Question, Answer, UserTest
-from apps.tester.serializers import TestSerializer, QuestionSerializer, AnswerSerializer, UserTestSerializer
+from apps.tester.serializers import TestSerializer, QuestionSerializer, AnswerSerializer, UserTestSerializer, \
+    TestSubmissionSerializer
 
 
 # Create your views here.
@@ -133,3 +137,49 @@ class UserTestViewSet(viewsets.ModelViewSet):
     serializer_class = UserTestSerializer
     permission_classes = [permissions.IsAuthenticated]
     filterset_class = UserTestSearch
+
+
+class SubmitTestView(APIView):
+
+    @extend_schema(
+        request=TestSubmissionSerializer,
+        responses={200: dict}  # или можешь указать кастомный сериализатор для ответа
+    )
+    def post(self, request, test_id):
+        test = get_object_or_404(Test, id=test_id)
+        serializer = TestSubmissionSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        user_name = serializer.validated_data['user_name']
+        submitted_answers = serializer.validated_data['answers']
+
+        correct = 0
+        total = test.QuestionsCount or Question.objects.filter(test=test).count()
+
+        for answer_data in submitted_answers:
+            question_id = answer_data['question_id']
+            answer_id = answer_data['answer_id']
+
+            try:
+                answer = Answer.objects.get(id=answer_id, QuestionId__id=question_id)
+                if answer.IsRight:
+                    correct += 1
+            except Answer.DoesNotExist:
+                continue
+
+        rating = round((correct / total) * 100, 2) if total else 0.0
+
+        UserTest.objects.create(
+            ProfileId=test,
+            UserName=user_name,
+            Rating=rating
+        )
+
+        return Response({
+            'user': user_name,
+            'correct_answers': correct,
+            'total_questions': total,
+            'rating': rating
+        })

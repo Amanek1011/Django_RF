@@ -24,3 +24,11 @@ class UserTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTest
         fields = '__all__'
+
+class AnswerSubmissionSerializer(serializers.Serializer):
+    question_id = serializers.IntegerField()
+    answer_id = serializers.IntegerField()
+
+class TestSubmissionSerializer(serializers.Serializer):
+    user_name = serializers.CharField(max_length=300)
+    answers = AnswerSubmissionSerializer(many=True)
